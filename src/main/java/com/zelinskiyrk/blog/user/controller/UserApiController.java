@@ -2,9 +2,11 @@ package com.zelinskiyrk.blog.user.controller;
 
 import com.sun.source.tree.BreakTree;
 import com.zelinskiyrk.blog.user.api.request.RegistrationRequest;
+import com.zelinskiyrk.blog.user.api.request.UserRequest;
 import com.zelinskiyrk.blog.user.api.response.UserFullResponse;
 import com.zelinskiyrk.blog.user.api.response.UserResponse;
 import com.zelinskiyrk.blog.user.exception.UserExistException;
+import com.zelinskiyrk.blog.user.exception.UserNotExistException;
 import com.zelinskiyrk.blog.user.mapping.UserMapping;
 import com.zelinskiyrk.blog.user.routes.UserApiRoutes;
 import com.zelinskiyrk.blog.user.service.UserApiService;
@@ -40,6 +42,16 @@ public class UserApiController {
     ) {
         return UserMapping.getInstance().getSearch().convert(
                 userApiService.search(query, size, skip)
+        );
+    }
+
+    @PutMapping(UserApiRoutes.BY_ID)
+    public UserFullResponse updateById(
+            @PathVariable String id,
+            @RequestBody UserRequest userRequest
+            ) throws UserNotExistException {
+        return UserMapping.getInstance().getResponseFull().convert(
+                userApiService.update(userRequest)
         );
     }
 

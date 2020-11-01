@@ -1,7 +1,9 @@
 package com.zelinskiyrk.blog.user.service;
 
 import com.zelinskiyrk.blog.user.api.request.RegistrationRequest;
+import com.zelinskiyrk.blog.user.api.request.UserRequest;
 import com.zelinskiyrk.blog.user.exception.UserExistException;
+import com.zelinskiyrk.blog.user.exception.UserNotExistException;
 import com.zelinskiyrk.blog.user.model.UserDoc;
 import com.zelinskiyrk.blog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +59,21 @@ public class UserApiService {
         query.skip(skip);
 
         return mongoTemplate.find(query, UserDoc.class);
+    }
+
+    public UserDoc update(UserRequest request) throws UserNotExistException {
+        Optional<UserDoc> userDocOptional = userRepository.findById(request.getId());
+        if (userDocOptional.isPresent() == false) {
+            throw new UserNotExistException();
+        }
+
+        UserDoc userDoc = userDocOptional.get();
+        userDoc.setLastName(request.getLastName());
+        userDoc.setFirstName(request.getFirstName());
+        userDoc.setAddress(request.getAddress());
+        userDoc.setCompany(request.getCompany());
+        userRepository.save(userDoc);
+
+        return userDoc;
     }
 }
