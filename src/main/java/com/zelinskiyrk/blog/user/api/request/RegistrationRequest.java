@@ -1,11 +1,12 @@
 package com.zelinskiyrk.blog.user.api.request;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
 @Getter
 @Setter
+@ApiModel(value = "RegistrationRequest", description = "Model for register")
 public class RegistrationRequest {
     private String email;
     private String password;
