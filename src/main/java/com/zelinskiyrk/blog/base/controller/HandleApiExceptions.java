@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -25,6 +26,16 @@ public class HandleApiExceptions extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserExistException.class)
     public ResponseEntity<Object> UserExistException(UserExistException ex, WebRequest request){
         return buildResponseEntity(ErrorResponse.of("UserExistException", HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(UserNotExistException.class)
+    public ResponseEntity<Object> UserNotExistException(UserNotExistException ex, WebRequest request){
+        return buildResponseEntity(ErrorResponse.of("UserNotExistException", HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> badRequest(UserNotExistException ex, WebRequest request){
+        return buildResponseEntity(ErrorResponse.of("ResponseStatusException", HttpStatus.BAD_REQUEST));
     }
 
     @ExceptionHandler(Exception.class)
