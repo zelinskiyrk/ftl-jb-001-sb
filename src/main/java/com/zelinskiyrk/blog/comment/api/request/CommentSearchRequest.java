@@ -4,10 +4,12 @@ import com.zelinskiyrk.blog.base.api.request.SearchRequest;
 import io.swagger.annotations.ApiParam;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.bson.types.ObjectId;
 
 @Getter
 @Setter
+@SuperBuilder
 public class CommentSearchRequest extends SearchRequest {
     @ApiParam(name = "articleId", value = "Search by article", required = false)
     private ObjectId articleId;
