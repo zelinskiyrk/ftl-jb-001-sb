@@ -19,6 +19,7 @@ public class FileMapping {
                     .id(fileDoc.getId().toString())
                     .title(fileDoc.getTitle())
                     .ownerId(fileDoc.getOwnerId().toString())
+                    .contentType(fileDoc.getContentType())
                     .build();
         }
 
