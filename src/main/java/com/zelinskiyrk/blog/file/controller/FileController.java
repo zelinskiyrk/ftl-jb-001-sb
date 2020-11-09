@@ -1,5 +1,6 @@
 package com.zelinskiyrk.blog.file.controller;
 
+import com.zelinskiyrk.blog.auth.exceptions.AuthException;
 import com.zelinskiyrk.blog.base.api.request.SearchRequest;
 import com.zelinskiyrk.blog.base.api.response.OkResponse;
 import com.zelinskiyrk.blog.base.api.response.SearchResponse;
@@ -37,8 +38,8 @@ public class FileController {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 400, message = "File already exist")
     })
-    public @ResponseBody OkResponse<FileResponse> create(@RequestParam MultipartFile file, @RequestParam ObjectId ownerId) throws IOException, UserNotExistException {
-        return OkResponse.of(FileMapping.getInstance().getResponse().convert(fileApiService.create(file, ownerId)));
+    public @ResponseBody OkResponse<FileResponse> create(@RequestParam MultipartFile file) throws IOException, AuthException {
+        return OkResponse.of(FileMapping.getInstance().getResponse().convert(fileApiService.create(file)));
     }
 
     @GetMapping(FileApiRoutes.DOWNLOAD)

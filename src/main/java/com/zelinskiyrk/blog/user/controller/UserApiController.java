@@ -1,5 +1,7 @@
 package com.zelinskiyrk.blog.user.controller;
 
+import com.zelinskiyrk.blog.auth.exceptions.AuthException;
+import com.zelinskiyrk.blog.auth.exceptions.NotAccessException;
 import com.zelinskiyrk.blog.base.api.request.SearchRequest;
 import com.zelinskiyrk.blog.base.api.response.OkResponse;
 import com.zelinskiyrk.blog.base.api.response.SearchResponse;
@@ -68,7 +70,7 @@ public class UserApiController {
     public OkResponse<UserFullResponse> updateById(
             @ApiParam(value = "User ID") @PathVariable String id,
             @RequestBody UserRequest userRequest
-            ) throws UserNotExistException {
+            ) throws AuthException {
         return OkResponse.of(UserMapping.getInstance().getResponseFull().convert(
                 userApiService.update(userRequest)
         ));
@@ -83,7 +85,7 @@ public class UserApiController {
     )
     public OkResponse<String> deleteById(
             @ApiParam(value = "User ID") @PathVariable ObjectId id
-    ) {
+    ) throws AuthException, NotAccessException {
         userApiService.delete(id);
         return OkResponse.of(HttpStatus.OK.toString());
     }

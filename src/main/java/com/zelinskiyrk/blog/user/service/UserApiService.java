@@ -1,5 +1,8 @@
 package com.zelinskiyrk.blog.user.service;
 
+import com.zelinskiyrk.blog.auth.exceptions.AuthException;
+import com.zelinskiyrk.blog.auth.exceptions.NotAccessException;
+import com.zelinskiyrk.blog.auth.service.AuthService;
 import com.zelinskiyrk.blog.base.api.request.SearchRequest;
 import com.zelinskiyrk.blog.base.api.response.SearchResponse;
 import com.zelinskiyrk.blog.user.api.request.RegistrationRequest;
@@ -25,6 +28,7 @@ import java.util.Optional;
 public class UserApiService {
     private final UserRepository userRepository;
     private final MongoTemplate mongoTemplate;
+    private final AuthService authService;
 
     public UserDoc registration(RegistrationRequest request) throws UserExistException {
         if (userRepository.findByEmail(request.getEmail()).isPresent() == true) {
@@ -64,13 +68,9 @@ public class UserApiService {
         return SearchResponse.of(userDocs, count);
     }
 
-    public UserDoc update(UserRequest request) throws UserNotExistException {
-        Optional<UserDoc> userDocOptional = userRepository.findById(request.getId());
-        if (userDocOptional.isPresent() == false) {
-            throw new UserNotExistException();
-        }
+    public UserDoc update(UserRequest request) throws AuthException {
+        UserDoc userDoc = authService.currentUser();
 
-        UserDoc userDoc = userDocOptional.get();
         userDoc.setLastName(request.getLastName());
         userDoc.setFirstName(request.getFirstName());
         userDoc.setAddress(request.getAddress());
@@ -80,7 +80,8 @@ public class UserApiService {
         return userDoc;
     }
 
-    public void delete(ObjectId id) {
+    public void delete(ObjectId id) throws NotAccessException, AuthException {
+        if (authService.currentUser().getId().equals(id) == false) throw new NotAccessException();
         userRepository.deleteById(id);
     }
 }

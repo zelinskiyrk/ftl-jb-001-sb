@@ -1,6 +1,8 @@
 package com.zelinskiyrk.blog.photo.controller;
 
 import com.zelinskiyrk.blog.album.exception.AlbumNotExistException;
+import com.zelinskiyrk.blog.auth.exceptions.AuthException;
+import com.zelinskiyrk.blog.auth.exceptions.NotAccessException;
 import com.zelinskiyrk.blog.base.api.request.SearchRequest;
 import com.zelinskiyrk.blog.base.api.response.OkResponse;
 import com.zelinskiyrk.blog.base.api.response.SearchResponse;
@@ -69,7 +71,7 @@ public class PhotoApiController {
     public OkResponse<PhotoResponse> updateById(
             @ApiParam(value = "Photo ID") @PathVariable String id,
             @RequestBody PhotoRequest photoRequest
-            ) throws PhotoNotExistException {
+            ) throws PhotoNotExistException, AuthException, NotAccessException {
         return OkResponse.of(PhotoMapping.getInstance().getResponse().convert(
                 photoApiService.update(photoRequest)
         ));
@@ -84,7 +86,7 @@ public class PhotoApiController {
     )
     public OkResponse<String> deleteById(
             @ApiParam(value = "Photo ID") @PathVariable ObjectId id
-    ) {
+    ) throws AuthException, NotAccessException, ChangeSetPersister.NotFoundException {
         photoApiService.delete(id);
         return OkResponse.of(HttpStatus.OK.toString());
     }
