@@ -5,6 +5,7 @@ import com.zelinskiyrk.blog.auth.exceptions.NotAccessException;
 import com.zelinskiyrk.blog.auth.service.AuthService;
 import com.zelinskiyrk.blog.base.api.request.SearchRequest;
 import com.zelinskiyrk.blog.base.api.response.SearchResponse;
+import com.zelinskiyrk.blog.base.service.EmailSenderService;
 import com.zelinskiyrk.blog.user.api.request.RegistrationRequest;
 import com.zelinskiyrk.blog.user.api.request.UserRequest;
 import com.zelinskiyrk.blog.user.exception.UserExistException;
@@ -29,6 +30,7 @@ public class UserApiService {
     private final UserRepository userRepository;
     private final MongoTemplate mongoTemplate;
     private final AuthService authService;
+    private final EmailSenderService emailSenderService;
 
     public UserDoc registration(RegistrationRequest request) throws UserExistException {
         if (userRepository.findByEmail(request.getEmail()).isPresent() == true) {
@@ -39,6 +41,9 @@ public class UserApiService {
         userDoc.setEmail(request.getEmail());
         userDoc.setPassword(userDoc.hexPassword(request.getPassword()));
         userDoc = userRepository.save(userDoc);
+
+        emailSenderService.sendEmailRegistration(request.getEmail());
+
         return userDoc;
     }
 
