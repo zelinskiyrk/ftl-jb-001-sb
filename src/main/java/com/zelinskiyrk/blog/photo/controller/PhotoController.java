@@ -1,6 +1,8 @@
 package com.zelinskiyrk.blog.photo.controller;
 
 import com.zelinskiyrk.blog.album.exception.AlbumNotExistException;
+import com.zelinskiyrk.blog.auth.exceptions.AuthException;
+import com.zelinskiyrk.blog.auth.exceptions.NotAccessException;
 import com.zelinskiyrk.blog.base.api.response.OkResponse;
 import com.zelinskiyrk.blog.photo.api.response.PhotoResponse;
 import com.zelinskiyrk.blog.photo.exception.PhotoExistException;
@@ -36,10 +38,9 @@ public class PhotoController {
     })
     public @ResponseBody OkResponse<PhotoResponse> create(
             @RequestParam MultipartFile file,
-            @RequestParam ObjectId ownerId,
             @RequestParam ObjectId albumId
-    ) throws IOException, UserNotExistException, PhotoExistException, AlbumNotExistException {
-        return OkResponse.of(PhotoMapping.getInstance().getResponse().convert(photoApiService.create(file, ownerId, albumId)));
+    ) throws IOException, AlbumNotExistException, AuthException, NotAccessException {
+        return OkResponse.of(PhotoMapping.getInstance().getResponse().convert(photoApiService.create(file, albumId)));
     }
 
     @GetMapping(PhotoApiRoutes.DOWNLOAD)

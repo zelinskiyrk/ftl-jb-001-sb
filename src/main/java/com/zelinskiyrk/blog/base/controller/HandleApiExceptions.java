@@ -3,6 +3,8 @@ package com.zelinskiyrk.blog.base.controller;
 import com.zelinskiyrk.blog.auth.exceptions.AuthException;
 import com.zelinskiyrk.blog.auth.exceptions.NotAccessException;
 import com.zelinskiyrk.blog.base.api.response.ErrorResponse;
+import com.zelinskiyrk.blog.comment.exception.CommentNotExistException;
+import com.zelinskiyrk.blog.todoTask.exception.TodoTaskNotExistException;
 import com.zelinskiyrk.blog.user.exception.UserExistException;
 import com.zelinskiyrk.blog.user.exception.UserNotExistException;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -43,6 +45,16 @@ public class HandleApiExceptions extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<Object> authException(AuthException ex, WebRequest request){
         return buildResponseEntity(ErrorResponse.of("AuthException", HttpStatus.UNAUTHORIZED));
+    }
+
+    @ExceptionHandler(TodoTaskNotExistException.class)
+    public ResponseEntity<Object> TodoTaskNotExistException(TodoTaskNotExistException ex, WebRequest request){
+        return buildResponseEntity(ErrorResponse.of("TodoTaskNotExistException", HttpStatus.NOT_FOUND));
+    }
+
+    @ExceptionHandler(CommentNotExistException.class)
+    public ResponseEntity<Object> CommentNotExistException(CommentNotExistException ex, WebRequest request){
+        return buildResponseEntity(ErrorResponse.of("CommentNotExistException", HttpStatus.NOT_FOUND));
     }
 
     @ExceptionHandler(NotAccessException.class)

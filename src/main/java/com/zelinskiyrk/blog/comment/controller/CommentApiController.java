@@ -1,6 +1,8 @@
 package com.zelinskiyrk.blog.comment.controller;
 
 import com.zelinskiyrk.blog.article.exception.ArticleNotExistException;
+import com.zelinskiyrk.blog.auth.exceptions.AuthException;
+import com.zelinskiyrk.blog.auth.exceptions.NotAccessException;
 import com.zelinskiyrk.blog.base.api.request.SearchRequest;
 import com.zelinskiyrk.blog.base.api.response.OkResponse;
 import com.zelinskiyrk.blog.base.api.response.SearchResponse;
@@ -33,7 +35,7 @@ public class CommentApiController {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 400, message = "Comment already exist")
     })
-    public OkResponse<CommentResponse> create(@RequestBody CommentRequest request) throws CommentExistException, UserNotExistException, ArticleNotExistException {
+    public OkResponse<CommentResponse> create(@RequestBody CommentRequest request) throws ArticleNotExistException, AuthException {
         return OkResponse.of(CommentMapping.getInstance().getResponse().convert(commentApiService.create(request)));
     }
 
@@ -79,7 +81,7 @@ public class CommentApiController {
     public OkResponse<CommentResponse> updateById(
             @ApiParam(value = "Comment ID") @PathVariable String id,
             @RequestBody CommentRequest commentRequest
-            ) throws CommentNotExistException {
+            ) throws CommentNotExistException, AuthException, NotAccessException {
         return OkResponse.of(CommentMapping.getInstance().getResponse().convert(
                 commentApiService.update(commentRequest)
         ));
@@ -94,7 +96,7 @@ public class CommentApiController {
     )
     public OkResponse<String> deleteById(
             @ApiParam(value = "Comment ID") @PathVariable ObjectId id
-    ) {
+    ) throws AuthException, NotAccessException, ChangeSetPersister.NotFoundException {
         commentApiService.delete(id);
         return OkResponse.of(HttpStatus.OK.toString());
     }
